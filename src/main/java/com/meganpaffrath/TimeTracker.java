@@ -1,6 +1,9 @@
 package com.meganpaffrath;
 import com.meganpaffrath.api.v1.users.UserContainer;
 import com.meganpaffrath.api.v1.users.UserResource;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -12,9 +15,23 @@ import static spark.Spark.*;
  *
  */
 public class TimeTracker {
+    // API
     private UserResource userResource;
 
+    // Database
+    public static MongoClient mongoClient;
+    public static MongoDatabase database;
+    public static MongoCollection users;
+
     TimeTracker() {
+        // Mongo & Database
+        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        database = mongoClient.getDatabase("timeTrackerDB");
+        users = database.getCollection("users");
+        // password
+//        boolean auth = database.authenticate("username", "pwd".toCharArray());
+
+        // API Routes & Interaction
         initRoutes();
         userResource = new UserResource();
     }
