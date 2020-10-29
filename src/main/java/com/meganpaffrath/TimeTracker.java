@@ -53,9 +53,10 @@ public class TimeTracker {
 //            });
             path("/users", () -> {
                 post("/new" , map((req, res) -> userResource.addUser(req)));
-            });
-            path("/users", () -> {
                 post("/remove" , map((req, res) -> userResource.removeUser(req)));
+                path("/activities", () -> {
+                    post("/add" , map((req, res) -> userResource.addActivity(req)));
+                });
             });
         });
     }
@@ -76,4 +77,23 @@ http://localhost:1111/api/v1/users/new?username=meganpaffrath
 
 http://localhost:1111/api/v1/users/new?username=deleteThisUser
 http://localhost:1111/api/v1/users/remove?username=deleteThisUser
+
+// add activity
+http://localhost:1111/api/v1/users/activities/add?username=meganpaffrath&activity=guitar
+
+// remove activity
+
+ */
+
+/*
+Funcitonalities
+
+- Add user
+- Remove user
++ Add activity to user
++ Remove activity from user
++ Add time to user's activity
++ Remove time from user's activity
++ Retrieve month data for an activity of a user
++ Return year data for an activity of a user
  */

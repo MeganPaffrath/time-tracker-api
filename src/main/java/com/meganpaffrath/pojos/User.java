@@ -12,6 +12,7 @@ public class User {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("_id")
     public ObjectId id;
+
     public String username;
     public List<Activity> activities;
 }

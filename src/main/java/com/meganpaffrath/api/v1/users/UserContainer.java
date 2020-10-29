@@ -2,6 +2,7 @@ package com.meganpaffrath.api.v1.users;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meganpaffrath.TimeTracker;
+import com.meganpaffrath.pojos.Activity;
 import com.meganpaffrath.pojos.User;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
@@ -9,6 +10,7 @@ import org.bson.Document;
 // for mongo
 import javax.print.Doc;
 
+import java.sql.Time;
 import java.util.Map;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -30,10 +32,7 @@ public class UserContainer {
             newUserT.username = newUsername;
             newUserT.activities = null;
             Map<String, Object> map = new ObjectMapper().convertValue(newUserT, Map.class);
-//            map.remove("_id");
-
             Document newUser = new Document(map);
-//            Document newUser = new Document("user", newUsername);
             TimeTracker.users.insertOne(newUser);
             return "created";
         } else {
@@ -57,9 +56,30 @@ public class UserContainer {
             } else {
                 throw new Exception("Failed to find user: " + remUsername);
             }
-        } else { // no user fownd
+        } else { // no user found
             throw new Exception("Failed to find user: " + remUsername);
         }
+    }
+
+    /**
+     * Adds activity assuming user exists (user should be logged in)
+     * @param activity
+     * @param username
+     * @return
+     */
+    public String addActivity(String activity, String username) {
+        Activity newAct = new Activity();
+        newAct.name = activity;
+        newAct.intervals = null;
+        Map<String, Object> map = new ObjectMapper().convertValue(newAct, Map.class);
+        Document newActivity = new Document(map);
+
+//        TimeTracker.users.updateOne(
+//                (eq("username", username)),
+//                newActivity ); // figure out how to insert this activity
+
+
+        return ("Act: " + activity + "  user: " + username);
     }
 
 

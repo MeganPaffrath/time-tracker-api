@@ -7,7 +7,8 @@ public class UserResource {
     UserContainer userContainer;
 
     public enum Param {
-        USERNAME("username");
+        USERNAME("username"),
+        ACTIVITY("activity");
 
         private String value;
         Param(final String value) {
@@ -34,6 +35,14 @@ public class UserResource {
     public Route removeUser(final Request request) {
         try {
             return ok(userContainer.removeUser(request.queryParams(Param.USERNAME.value())));
+        } catch (final Exception e) {
+            return bad(e.getMessage());
+        }
+    }
+
+    public Route addActivity(final Request request) {
+        try {
+            return ok(userContainer.addActivity(request.queryParams(Param.USERNAME.value()), Param.ACTIVITY.value()));
         } catch (final Exception e) {
             return bad(e.getMessage());
         }
