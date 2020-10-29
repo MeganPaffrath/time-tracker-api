@@ -48,8 +48,11 @@ public class TimeTracker {
         port(1111);
 
         path("/api/v1", () -> {
+//            path("/users", () -> {
+//                get("/:" + UserResource.Param.USERNAME.value(), map((req, res) -> userResource.getUser(req)));
+//            });
             path("/users", () -> {
-                get("/:" + UserResource.Param.USERNAME.value(), map((req, res) -> userResource.getUser(req)));
+                post("/new" , map((req, res) -> userResource.postUser(req)));
             });
         });
     }

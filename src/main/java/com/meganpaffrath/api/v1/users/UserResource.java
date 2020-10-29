@@ -23,13 +23,23 @@ public class UserResource {
         userContainer = new UserContainer();
     }
 
-    public Route getUser(final Request request) {
+    public Route postUser(final Request request) {
         try {
-            return ok(userContainer.getInfo(request.params(Param.USERNAME.value())));
+            return ok(userContainer.addUser(request.queryParams(Param.USERNAME.value())));
         } catch (final Exception e) {
             return bad(e.getMessage());
         }
     }
+
+//    public Route deleteUser()
+
+//    public Route getUser(final Request request) {
+//        try {
+//            return ok(userContainer.getInfo(request.params(Param.USERNAME.value())));
+//        } catch (final Exception e) {
+//            return bad(e.getMessage());
+//        }
+//    }
 
     private static Route ok(final String body) {
         return (req, res) -> {
