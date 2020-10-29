@@ -52,7 +52,10 @@ public class TimeTracker {
 //                get("/:" + UserResource.Param.USERNAME.value(), map((req, res) -> userResource.getUser(req)));
 //            });
             path("/users", () -> {
-                post("/new" , map((req, res) -> userResource.postUser(req)));
+                post("/new" , map((req, res) -> userResource.addUser(req)));
+            });
+            path("/users", () -> {
+                post("/remove" , map((req, res) -> userResource.removeUser(req)));
             });
         });
     }
@@ -65,3 +68,12 @@ public class TimeTracker {
         Route convert(Request req, Response res);
     }
 }
+
+
+/*
+Route request examples:
+http://localhost:1111/api/v1/users/new?username=meganpaffrath
+
+http://localhost:1111/api/v1/users/new?username=deleteThisUser
+http://localhost:1111/api/v1/users/remove?username=deleteThisUser
+ */

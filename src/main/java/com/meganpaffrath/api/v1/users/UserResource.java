@@ -23,9 +23,17 @@ public class UserResource {
         userContainer = new UserContainer();
     }
 
-    public Route postUser(final Request request) {
+    public Route addUser(final Request request) {
         try {
             return ok(userContainer.addUser(request.queryParams(Param.USERNAME.value())));
+        } catch (final Exception e) {
+            return bad(e.getMessage());
+        }
+    }
+
+    public Route removeUser(final Request request) {
+        try {
+            return ok(userContainer.removeUser(request.queryParams(Param.USERNAME.value())));
         } catch (final Exception e) {
             return bad(e.getMessage());
         }
