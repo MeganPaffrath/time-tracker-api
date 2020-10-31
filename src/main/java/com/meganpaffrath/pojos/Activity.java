@@ -15,6 +15,6 @@ public class Activity {
 
     public String username;
     public String activity;
-    public Date start;
-    public Date end;
+    public Long start;
+    public Long end;
 }

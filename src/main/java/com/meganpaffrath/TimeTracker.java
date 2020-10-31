@@ -1,12 +1,20 @@
 package com.meganpaffrath;
 import com.meganpaffrath.api.v1.users.ActivityResource;
-import com.mongodb.MongoClient;
+import com.meganpaffrath.pojos.Activity;
+import com.mongodb.ConnectionString;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import org.bson.codecs.configuration.CodecRegistry;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import org.bson.codecs.pojo.PojoCodecProvider;
+import com.mongodb.MongoClientSettings;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import static spark.Spark.*;
 
 public class TimeTracker {
@@ -16,13 +24,23 @@ public class TimeTracker {
     // Database
     public static MongoClient mongoClient;
     public static MongoDatabase database;
-    public static MongoCollection activities;
+    public static MongoCollection<Activity> activities;
 
     TimeTracker() {
         // Mongo & Database
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
+        CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
+        CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
+        MongoClientSettings clientSettings = MongoClientSettings.builder()
+                .applyConnectionString(connectionString)
+                .codecRegistry(codecRegistry)
+                .build();
+
+        MongoClient mongoClient = MongoClients.create(clientSettings);
+
+//        MongoClient mongoClient = new MongoClient("localhost", 27017);
         database = mongoClient.getDatabase("timeTrackerDB");
-        activities = database.getCollection("activities");
+        activities = database.getCollection("activities", Activity.class);
         // password
 //        boolean auth = database.authenticate("username", "pwd".toCharArray());
 

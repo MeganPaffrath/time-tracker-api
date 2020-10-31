@@ -5,7 +5,10 @@ import com.meganpaffrath.TimeTracker;
 import com.meganpaffrath.pojos.Activity;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.util.JSON;
 import com.mongodb.DBObject;
+import org.bson.types.BasicBSONList;
 import com.mongodb.client.FindIterable;
 import org.bson.*;
 
@@ -17,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.mongodb.client.model.Filters.*;
 
@@ -38,12 +43,12 @@ public class ActivityContainer {
         Activity newActivity = new Activity();
         newActivity.activity = activity;
         newActivity.username = username;
-        newActivity.start = start.getTime();
-        newActivity.end = end.getTime();
+        newActivity.start = start.getTimeInMillis();
+        newActivity.end = end.getTimeInMillis();
 
-        Map<String, Object> map = new ObjectMapper().convertValue(newActivity, Map.class);
-        Document newAct = new Document(map);
-        TimeTracker.activities.insertOne(newAct);
+//        Map<String, Object> map = new ObjectMapper().convertValue(newActivity, Map.class);
+//        Document newAct = new Document(map);
+        TimeTracker.activities.insertOne(newActivity);
 
 
         return (
@@ -66,16 +71,47 @@ public class ActivityContainer {
         System.out.println("Start " + start.getTime());
         System.out.println("Stop " + stop.getTime());
 
-        FindIterable cursor = TimeTracker.activities.find(and(eq("username", username),
-                gte("start", start.getTimeInMillis()), lte("start", stop.getTimeInMillis()),
-                (eq("activity", activity)))  );
+//        FindIterable cursor = TimeTracker.activities.find(
+//                and(eq("username", username),
+//                    gte("start", start.getTimeInMillis()),
+//                    lte("start", stop.getTimeInMillis()),
+//                    (eq("activity", activity))
+//                )
+//        );
+
+        MongoCursor<Activity> cursor = TimeTracker.activities.find(
+                and(eq("username", username),
+                        gte("start", start.getTimeInMillis()),
+                        lte("start", stop.getTimeInMillis()),
+                        (eq("activity", activity))
+                )
+        ).iterator();
 
         int count = 0;
 
-        for (Object document : cursor) {
-            System.out.println(document.toString());
-            count++;
+        try {
+            while (cursor.hasNext()) {
+                Activity act = cursor.next();
+                System.out.println(act.username);
+//                System.out.println(cursor.next().toJson());
+                count++;
+            }
+        } finally {
+//            cursor.close();
         }
+
+//        System.out.println("First: " + item);
+
+
+//        Document yearActivities = new Document();
+
+//        for (Object document : cursor) {
+//            System.out.println(document.toString());
+//            count++;
+////            document.toJson();
+//        }
+
+//        System.out.println("TIMES: " + times.eq);
 
         return (count + " " + activity + " activity log(s) found for " + year);
     }
