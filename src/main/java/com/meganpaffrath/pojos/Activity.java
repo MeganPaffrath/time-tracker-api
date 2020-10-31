@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.bson.types.ObjectId;
 
+import java.util.Date;
 import java.util.List;
 
 public class Activity {
@@ -12,6 +13,8 @@ public class Activity {
     @JsonProperty("_id")
     public ObjectId id;
 
-    public String name;
-    public List<Interval> intervals;
+    public String username;
+    public String activity;
+    public Date start;
+    public Date end;
 }
